@@ -8,14 +8,14 @@ import copy
 from mpl_toolkits.mplot3d import Axes3D
 from IPython.display import Image
 
-from jie.demo import mock_experiment, error_types, polymer_model, polymer_skip, find_polymer
+from jie.jie.demo import mock_experiment, error_types, polymer_model, polymer_skip, find_polymer
 
-from jie.aligner import (log_bond,
+from jie.jie.aligner import (log_bond,
                          find_chr,
                          edge_weights,
                          boundary_init)
 
-from jie.utilities import (cartesian_esqsum, 
+from jie.jie.utilities import (cartesian_esqsum, 
                            cartesian_sqdiff, 
                            cartesian_diff, 
                            check_lp_wgaps,
