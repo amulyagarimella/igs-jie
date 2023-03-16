@@ -28,7 +28,7 @@ def calc_bond_prob (p1, p2, corr_fac=nm_per_bp/pixel_dist, l_p_bp=l_p_bp):
 def pairwise_bond_prob (data):
     '''
     input:
-        data: must have cols [x_um, y_um, z_um, hg38_pos]
+        data: must have cols [x_um, y_um, z_um, pos]
     output:
         probs_matrix: matrix of probabilities (dataframe)
         probs_list: dataframe of pairwise probabilities with corresponding points
@@ -37,7 +37,7 @@ def pairwise_bond_prob (data):
     nrows = len(data.index)
     row_range = range(nrows)
     print(data.head())
-    probs_matrix = pd.DataFrame(index=data.hg38_pos, columns=data.hg38_pos, dtype=float)
+    probs_matrix = pd.DataFrame(index=data.pos, columns=data.pos, dtype=float)
     out_cols = ['x_um_1', 'y_um_1', 'z_um_1', 'hg38_bp_1', 
                 'x_um_2', 'y_um_2', 'z_um_2', 'hg38_bp_2', 
                 'prob', 'dist_bp', 'dist_bp_abs', 'dist_euc']
@@ -62,15 +62,15 @@ def score_heatmap (probs_matrix):
     sns.heatmap(data=probs_matrix.sort_index(axis=0).sort_index(axis=1))
     plt.title('Log bond probabilities ')
     plt.tight_layout()
+    plt.savefig('logbond_score_heatmap.svg')
     plt.show()
-    #plt.savefig('')
     plt.clf()
 
 def score_hist (probs):
     sns.histplot(x=probs['prob'])
     plt.xlabel('log bond probabilities')
+    plt.savefig('logbond_score_hist.svg')
     plt.show()
-    #plt.savefig('')
     plt.clf()
 
 # score scatterplots
@@ -80,8 +80,8 @@ def score_v_x (data, x, xlabel=None):
     plt.title(f'Log bond probabilites vs. {xlabel}')
     if xlabel is not None:
         plt.xlabel(xlabel)
+    plt.savefig(f'score_v_{x}.svg')
     plt.show()
-    #plt.savefig('')
     plt.clf()
 
 # A scatter plot of bond score versus genomic distance
@@ -91,6 +91,14 @@ def score_v_distance_bp (probs):
 # and another one of bond scores vs euclidian distance
 def score_v_distance (probs):
     score_v_x(data=probs, x='dist_euc', xlabel="Euclidean distance")
+
+def distance_euc_v_distance_bp (probs):
+    sns.scatterplot(probs, y="dist_euc", x="dist_bp_abs")
+    plt.xlabel('genomic distance')
+    plt.ylabel('euclidean distance')
+    plt.savefig(f'bp_v_euc.svg')
+    plt.show()
+    plt.clf()
 
 '''Plot all of the chr1 reads in xyz space and for any given point, color 
 all other points by the bond score with that point (maybe make the given point
@@ -118,20 +126,23 @@ def visualize_reads (probs, p):
     plot.scatter(xs=p_pairs['x_um'], ys=p_pairs['y_um'], zs=p_pairs['z_um'], c=p_pairs['prob'])
     plot.scatter(xs=p[0], ys=p[1], zs=p[2], s=[50],c="black",marker="X")
     plt.title(f'3D visualization of chromosome points\nColored by distance from ({p[0]:.2f},{p[1]:.2f},{p[2]:.2f})')
+    plt.savefig('plot_probcolor.svg')
     plt.show()
     plt.clf
 
     # sanity check - color by euc/gen distance TODO
 
 
-def plot_chr (cell_id=1):
+def plot_chr (embryo_id = 1, cell_id=1):
     # divide by cell id
-    all_cells_file = 'Table_S1_pgp1_data_table.csv'
+    all_cells_file = 'coord_table_57_embryos_pub_210423.csv'
     all_cells = pd.read_csv(all_cells_file)
-    cell_data = all_cells[all_cells.cell_id==cell_id]
+    cell_data = all_cells[(all_cells.embryo_id==embryo_id)&(all_cells.cell_id==cell_id)]
+    print(f"# reads in embryo {embryo_id}, cell {cell_id}")
+    print(len(cell_data))
 
     # make data processing edits - see walkthru 00
-    cols_to_use = ['x_um', 'y_um', 'z_um', 'hg38_pos']
+    cols_to_use = ['x_um_abs', 'y_um_abs', 'z_um_abs', 'pos']
     new_cols = ['x_hat', 'y_hat', 'z_hat', 'hyb']
     """cell_pts_input = cell_data.copy(deep=True).loc[:, cols_to_use]
     cell_pts_input.columns = new_cols
@@ -142,9 +153,9 @@ def plot_chr (cell_id=1):
     # gene_dist = sorted(list(set(cell_pts_input.hyb.tolist())))
 
     # feed cell into find_all_chr
-    chrs = sorted(list(Counter(cell_data.hg38_chr).keys()))
+    chrs = sorted(list(Counter(cell_data.chr).keys()))
     for chr in range(1,2):
-        chr_data = cell_data.loc[cell_data.hg38_chr == chr, cols_to_use].reset_index(drop=True)
+        chr_data = cell_data.loc[cell_data.chr == chr, cols_to_use].reset_index(drop=True)
         """chr_data.x_um = chr_data.x_um.multiply(1000)
         chr_data.y_um = chr_data.y_um.multiply(1000)
         chr_data.z_um = chr_data.z_um.multiply(1000)"""
@@ -155,5 +166,6 @@ def plot_chr (cell_id=1):
         score_v_distance_bp(probs)
         print(chr_data)
         visualize_reads(probs, chr_data.iloc[0])
+        distance_euc_v_distance_bp(probs)
     
-plot_chr()
+plot_chr(embryo_id=50)
