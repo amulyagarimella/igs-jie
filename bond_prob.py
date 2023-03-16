@@ -62,15 +62,15 @@ def score_heatmap (probs_matrix):
     sns.heatmap(data=probs_matrix.sort_index(axis=0).sort_index(axis=1))
     plt.title('Log bond probabilities ')
     plt.tight_layout()
+    plt.savefig('logbond_score_heatmap.svg')
     plt.show()
-    #plt.savefig('')
     plt.clf()
 
 def score_hist (probs):
     sns.histplot(x=probs['prob'])
     plt.xlabel('log bond probabilities')
+    plt.savefig('logbond_score_hist.svg')
     plt.show()
-    #plt.savefig('')
     plt.clf()
 
 # score scatterplots
@@ -80,8 +80,8 @@ def score_v_x (data, x, xlabel=None):
     plt.title(f'Log bond probabilites vs. {xlabel}')
     if xlabel is not None:
         plt.xlabel(xlabel)
+    plt.savefig(f'score_v_{x}.svg')
     plt.show()
-    #plt.savefig('')
     plt.clf()
 
 # A scatter plot of bond score versus genomic distance
@@ -118,6 +118,7 @@ def visualize_reads (probs, p):
     plot.scatter(xs=p_pairs['x_um'], ys=p_pairs['y_um'], zs=p_pairs['z_um'], c=p_pairs['prob'])
     plot.scatter(xs=p[0], ys=p[1], zs=p[2], s=[50],c="black",marker="X")
     plt.title(f'3D visualization of chromosome points\nColored by distance from ({p[0]:.2f},{p[1]:.2f},{p[2]:.2f})')
+    plt.savefig('plot_probcolor.svg')
     plt.show()
     plt.clf
 
