@@ -19,10 +19,10 @@ def viz (fibers, chr_data, full_data, chr, fig, nrow, ncol, pos_col, idx, lines=
     unclustered = pd.concat([clustered, chr_data], ignore_index=True)
     unclustered = unclustered.drop_duplicates(keep=False)
     # TODO adjust looks
-    ax.scatter(xs=unclustered['x_hat'], ys=unclustered['y_hat'], zs=unclustered['z_hat'], c=colors[idx+1],alpha=.1)
+    ax.scatter(xs=unclustered['x_hat'], ys=unclustered['y_hat'], zs=unclustered['z_hat'], c=colors[(len(fibers) + 1) % len(colors)],alpha=.1)
     rest_of_cell = pd.concat([clustered, full_data], ignore_index=True)
     rest_of_cell = rest_of_cell.drop_duplicates(keep=False)
-    ax.scatter(xs=rest_of_cell['x_hat'], ys=rest_of_cell['y_hat'], zs=rest_of_cell['z_hat'], c='0.5',alpha=.05)
+    ax.scatter(xs=rest_of_cell['x_hat'], ys=rest_of_cell['y_hat'], zs=rest_of_cell['z_hat'], c='0.5',alpha=.01)
     ax.set_title(f"{chr}")
 
 
@@ -77,9 +77,10 @@ size = int(np.ceil(np.sqrt(len(res_chr))))
 
 for c in res_chr:
     sel_chr_pts = chr_pts[(chr_pts['celltype'] == chosen_celltype) & (chr_pts['chr'] == c) & (chr_pts['FOV'] == fov) & (chr_pts['finalcellID'] == cell)]['data'].tolist()[0]
-    cnum = int(c.replace("chr",""))
+    #  = int(c.replace("chr",""))
     #print(sel_res[c])
     viz(sel_res[c], sel_chr_pts, sel_pts, c, fig,size,size,'hyb',res_chr.index(c) +1)
+plt.tight_layout()
 plt.show()
 plt.clf()
 
