@@ -13,7 +13,7 @@ import seaborn as sns
 cell_chr_fiber = pd.DataFrame(columns=["cell", "FOV", "chrnum", "x_hat", "y_hat", "z_hat", "fiber"])
 
 available_chr = glob.glob('seqfishE14_demo01_res_chr*')
-for chr_file in available_chr[0:2]:
+for chr_file in available_chr:
     with open(chr_file, 'rb') as f:
         chr_fibers = pickle.load(f)
         for i in range(len(chr_fibers)):
@@ -67,6 +67,8 @@ same_fov = []
 diff_fov = [] 
 for i in range(len(cells)):
     for j in range(i,len(cells)):
+        if cells[i] == cells[j]:
+            pass
         try:
             r = pearsonr(chr_vs_chr[i].flatten(), chr_vs_chr[j].flatten())[0]
         except:
@@ -84,10 +86,9 @@ for i in range(len(cells)):
 
 # create histograms of fov-based relationships: TODO
 
-print(len(same_fov))
-
-sns.displot(x=same_fov,color="r")
-sns.displot(x=diff_fov,color="b")
+ax = plt.gca()
+sns.kdeplot(x=same_fov,color="r",ax=ax)
+sns.kdeplot(x=diff_fov,color="b",ax=ax)
 plt.xlim((-1,1))
 plt.savefig("chr1_chr2_memviz.png")
 plt.savefig("chr1_chr2_memviz.svg")
