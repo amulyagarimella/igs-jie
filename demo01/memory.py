@@ -42,7 +42,7 @@ for c in cells:
     # for chr i
     cvc = np.empty([len(chrs), len(chrs)])
     for i in range(len(chrs)):
-        # for chr j ≠ i
+        # for chr j != i
         for j in range(len(chrs)):
             if j != i:
                 dists = []
