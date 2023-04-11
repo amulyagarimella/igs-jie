@@ -86,7 +86,7 @@ for i in range(len(cells)):
 
 # create histograms of fov-based relationships: TODO
 
-ax = plt.gca()
+fig, ax = plt.subplots()
 sns.kdeplot(x=same_fov,color="r",ax=ax)
 sns.kdeplot(x=diff_fov,color="b",ax=ax)
 plt.xlim((-1,1))
