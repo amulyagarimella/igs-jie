@@ -4,7 +4,7 @@ import pandas as pd
 from collections import Counter
 import math
 import numpy as np
-from scipy.stats.stats import pearsonr   
+from scipy.stats import pearsonr   
 import matplotlib.pyplot as plt
 import seaborn as sns
 
