@@ -92,6 +92,7 @@ sns.kdeplot(x=diff_fov,color="b",ax=ax)
 plt.xlim((-1,1))
 plt.savefig("chr1_chr2_memviz.png")
 plt.savefig("chr1_chr2_memviz.svg")
+plt.show()
 
 
 # plot for fov 3: TODO
