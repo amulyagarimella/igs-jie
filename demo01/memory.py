@@ -86,8 +86,8 @@ for i in range(len(cells)):
 
 print(len(same_fov))
 
-sns.histplot(x=same_fov,color="r")
-sns.histplot(x=diff_fov,color="b")
+sns.displot(x=same_fov,color="r")
+sns.displot(x=diff_fov,color="b")
 plt.xlim((-1,1))
 plt.savefig("chr1_chr2_memviz.png")
 plt.savefig("chr1_chr2_memviz.svg")
