@@ -22,7 +22,7 @@ for chr_file in available_chr:
         all_cell_fibers = chr_fibers[i]
         for c in range(len(all_cell_fibers)):
             cell_fibers = all_cell_fibers[c]
-            cell_fibers['chrnum'] = cell_fibers['chr'].str.replace("chr","").astype(int)
+            cell_fibers['chrnum'] = cell_fibers['chr'].str.replace("chr","")
             # append, cell, fov, chrom, median pos
             med_info = cell_fibers.loc[:,['cell','FOV','chrnum','x_hat','y_hat','z_hat']].median(numeric_only=None)
             # assign fiber number
