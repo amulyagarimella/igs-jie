@@ -16,6 +16,7 @@ available_chr = glob.glob('seqfishE14_demo01_res_chr*')
 for chr_file in available_chr:
     #with open(chr_file, 'rb') as f:
         # ModuleNotFoundError: No module named 'pandas.core.indexes.numeric'
+    print(chr_file)
     chr_fibers = pd.read_pickle(chr_file)
     for i in range(len(chr_fibers)):
         # for each cell
@@ -32,6 +33,7 @@ for chr_file in available_chr:
             med_info['fiber'] = c
             cell_chr_fiber = pd.concat([cell_chr_fiber,pd.DataFrame(med_info).T],axis=0)
         # print(cell_chr_fiber)
+    print("completed")
 
 ## create #chr x #chr mean spatial distance matrix for all cells
 
