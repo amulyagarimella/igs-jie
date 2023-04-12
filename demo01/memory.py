@@ -24,7 +24,10 @@ for chr_file in available_chr:
             cell_fibers = all_cell_fibers[c]
             cell_fibers['chrnum'] = cell_fibers['chr'].str.replace("chr","")
             # append, cell, fov, chrom, median pos
-            med_info = cell_fibers.loc[:,['cell','FOV','chrnum','x_hat','y_hat','z_hat']].median(numeric_only=None)
+            try:
+                med_info = cell_fibers.loc[:,['cell','FOV','chrnum','x_hat','y_hat','z_hat']].median(numeric_only=None)
+            except:
+                pass
             # assign fiber number
             med_info['fiber'] = c
             cell_chr_fiber = pd.concat([cell_chr_fiber,pd.DataFrame(med_info).T],axis=0)
