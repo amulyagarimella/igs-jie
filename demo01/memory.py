@@ -13,7 +13,7 @@ import seaborn as sns
 cell_chr_fiber = pd.DataFrame(columns=["cell", "FOV", "chrnum", "x_hat", "y_hat", "z_hat", "fiber"])
 
 available_chr = glob.glob('seqfishE14_demo01_res_chr*')
-for chr_file in available_chr[0:2]:
+for chr_file in available_chr:
     #with open(chr_file, 'rb') as f:
         # ModuleNotFoundError: No module named 'pandas.core.indexes.numeric'
     print(chr_file)
