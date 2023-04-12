@@ -14,20 +14,21 @@ cell_chr_fiber = pd.DataFrame(columns=["cell", "FOV", "chrnum", "x_hat", "y_hat"
 
 available_chr = glob.glob('seqfishE14_demo01_res_chr*')
 for chr_file in available_chr:
-    with open(chr_file, 'rb') as f:
-        chr_fibers = pickle.load(f)
-        for i in range(len(chr_fibers)):
-            # for each cell
-            all_cell_fibers = chr_fibers[i]
-            for c in range(len(all_cell_fibers)):
-                cell_fibers = all_cell_fibers[c]
-                cell_fibers['chrnum'] = cell_fibers['chr'].str.replace("chr","").astype(int)
-                # append, cell, fov, chrom, median pos
-                med_info = cell_fibers.loc[:,['cell','FOV','chrnum','x_hat','y_hat','z_hat']].median(numeric_only=None)
-                # assign fiber number
-                med_info['fiber'] = c
-                cell_chr_fiber = pd.concat([cell_chr_fiber,pd.DataFrame(med_info).T],axis=0)
-            # print(cell_chr_fiber)
+    #with open(chr_file, 'rb') as f:
+        # ModuleNotFoundError: No module named 'pandas.core.indexes.numeric'
+    chr_fibers = pd.read_pickle(chr_file)
+    for i in range(len(chr_fibers)):
+        # for each cell
+        all_cell_fibers = chr_fibers[i]
+        for c in range(len(all_cell_fibers)):
+            cell_fibers = all_cell_fibers[c]
+            cell_fibers['chrnum'] = cell_fibers['chr'].str.replace("chr","").astype(int)
+            # append, cell, fov, chrom, median pos
+            med_info = cell_fibers.loc[:,['cell','FOV','chrnum','x_hat','y_hat','z_hat']].median(numeric_only=None)
+            # assign fiber number
+            med_info['fiber'] = c
+            cell_chr_fiber = pd.concat([cell_chr_fiber,pd.DataFrame(med_info).T],axis=0)
+        # print(cell_chr_fiber)
 
 ## create #chr x #chr mean spatial distance matrix for all cells
 
