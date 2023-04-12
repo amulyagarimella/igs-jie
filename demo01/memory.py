@@ -13,7 +13,7 @@ import seaborn as sns
 cell_chr_fiber = pd.DataFrame(columns=["cell", "FOV", "chrnum", "x_hat", "y_hat", "z_hat", "fiber"])
 
 available_chr = glob.glob('seqfishE14_demo01_res_chr*')
-for chr_file in available_chr:
+for chr_file in available_chr[0:2]:
     #with open(chr_file, 'rb') as f:
         # ModuleNotFoundError: No module named 'pandas.core.indexes.numeric'
     print(chr_file)
@@ -28,7 +28,7 @@ for chr_file in available_chr:
             try:
                 med_info = cell_fibers.loc[:,['cell','FOV','chrnum','x_hat','y_hat','z_hat']].median(numeric_only=None)
             except:
-                pass
+                continue
             # assign fiber number
             med_info['fiber'] = c
             cell_chr_fiber = pd.concat([cell_chr_fiber,pd.DataFrame(med_info).T],axis=0)
@@ -50,19 +50,18 @@ for c in cells:
     for i in range(len(chrs)):
         # for chr j != i
         for j in range(len(chrs)):
-            if j != i:
-                dists = []
-                fibers_i = cell_chr_fiber.loc[(cell_chr_fiber.cell==int(c)) & (cell_chr_fiber.chrnum==int(chrs[i]))]
-                f_i_pts = fibers_i.loc[fibers_i.fiber==int(i),['x_hat', 'y_hat','z_hat']].values
-                fibers_j = cell_chr_fiber.loc[(cell_chr_fiber.cell==int(c)) & (cell_chr_fiber.chrnum==int(chrs[j]))]
-                f_j_pts = fibers_j.loc[fibers_j.fiber==int(j),['x_hat', 'y_hat','z_hat']].values
-                for f_i_pt in f_i_pts:
-                    for f_j_pt in f_j_pts:
-                        d = math.dist(f_i_pt,f_j_pt)
-                        dists.append(d)
-                cvc[i][j] = np.mean(dists)
-            else:
-                pass
+            if j == i:
+                continue
+            dists = []
+            fibers_i = cell_chr_fiber.loc[(cell_chr_fiber.cell==int(c)) & (cell_chr_fiber.chrnum==int(chrs[i]))]
+            f_i_pts = fibers_i.loc[fibers_i.fiber==int(i),['x_hat', 'y_hat','z_hat']].values
+            fibers_j = cell_chr_fiber.loc[(cell_chr_fiber.cell==int(c)) & (cell_chr_fiber.chrnum==int(chrs[j]))]
+            f_j_pts = fibers_j.loc[fibers_j.fiber==int(j),['x_hat', 'y_hat','z_hat']].values
+            for f_i_pt in f_i_pts:
+                for f_j_pt in f_j_pts:
+                    d = math.dist(f_i_pt,f_j_pt)
+                    dists.append(d)
+            cvc[i][j] = np.mean(dists)
     chr_vs_chr.append(cvc)
 
 # create correlation matrix; # cells x # cells
@@ -73,12 +72,12 @@ same_fov = []
 diff_fov = [] 
 for i in range(len(cells)):
     for j in range(i,len(cells)):
-        if cells[i] == cells[j]:
-            pass
+        if i == j:
+            continue
         try:
             r = pearsonr(chr_vs_chr[i].flatten(), chr_vs_chr[j].flatten())[0]
         except:
-            pass
+            continue
         cell_v_cell[i][j][0] = r
         cell_v_cell[j][i][0] = r
         if list(cell_chr_fiber.loc[cell_chr_fiber.cell==cells[i], "FOV"])[0] == list(cell_chr_fiber.loc[cell_chr_fiber.cell==cells[j], "FOV"])[0]:
