@@ -105,7 +105,7 @@ for i in range(len(cells)):
             y = chr_vs_chr[j].flatten()
             nas = np.logical_or(np.isnan(x), np.isnan(y))
             r = pearsonr(x[~nas], y[~nas])[0]
-            if len(x[~nas]) < len(chrs) or len(y[~nas]) < len(chrs)/2:
+            if len(x[~nas]) < len(chrs) or len(y[~nas]) < 3:
                 print("chr missing, skip")
                 continue
             #print(f"({i},{j})")
